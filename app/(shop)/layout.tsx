@@ -1,6 +1,8 @@
 import { SiteChrome } from "@/components/site/chrome";
 import "../store.css";
 
+export const dynamic = "force-dynamic";
+
 const organization = {
   "@context": "https://schema.org",
   "@type": "ClothingStore",

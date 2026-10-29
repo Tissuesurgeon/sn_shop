@@ -338,9 +338,6 @@ async function resolveImage(filename: string): Promise<{ url: string; pathname: 
 
 async function main() {
   const email = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase();
-  if (!email) {
-    throw new Error("SEED_ADMIN_EMAIL is required");
-  }
 
   const categories = [
     { name: "Ankara", slug: "ankara", sortOrder: 0, description: "Wax-print dresses." },
@@ -522,6 +519,10 @@ async function main() {
 
   const password = process.env.SEED_ADMIN_PASSWORD;
   const passwordHash = password ? await bcrypt.hash(password, 12) : null;
+  if (!email) {
+    console.log(`Seeded ${products.length} sample dresses. Set SEED_ADMIN_EMAIL to create the owner.`);
+    return;
+  }
   await prisma.user.upsert({
     where: { email },
     create: {
