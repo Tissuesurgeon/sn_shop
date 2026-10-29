@@ -13,7 +13,7 @@ pnpm install
 cp .env.example .env
 ```
 
-Prisma reads `.env`. Set `DATABASE_URL` to the Prisma Postgres URL (`db.prisma.io`). Set `DIRECT_URL` to the direct URL when it is different. If `DIRECT_URL` is missing, the build uses `DATABASE_URL`. Do not point either at local Docker.
+Prisma reads `.env`. On Vercel, `DATABASE_URL` must be the Prisma Postgres string that starts with `prisma+postgres://` (Prisma Console → Connect). The `postgres://…@db.prisma.io:5432` string is `DIRECT_URL` only, for migrations. Vercel cannot open port 5432, so the shop stays empty when `DATABASE_URL` uses that host. Do not point either URL at local Docker.
 
 Set `AUTH_SECRET`, `AUTH_URL=http://localhost:3000`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, and `ADMIN_EMAILS` to that owner email. For a local checkout without Paystack keys, set `NEXT_PUBLIC_DEMO_PAYMENTS=true`. That flag is ignored when `NODE_ENV=production`. Leave `PAYSTACK_SECRET_KEY`, `RESEND_API_KEY`, and `BLOB_READ_WRITE_TOKEN` empty until you have them. Never commit `.env`.
 

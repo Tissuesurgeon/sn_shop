@@ -11,6 +11,7 @@ export const activeProductSelect = {
   pricePesewas: true,
   compareAtPesewas: true,
   isFeatured: true,
+  createdAt: true,
   madeToMeasure: true,
   mtmFeePesewas: true,
   leadTimeDays: true,

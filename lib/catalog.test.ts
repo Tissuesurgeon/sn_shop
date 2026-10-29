@@ -25,4 +25,12 @@ describe("filterCatalog", () => {
     expect(filterCatalog(dresses, { sort: "price-desc" })[0]?.name).toBe("Ama Kente");
     expect(filterCatalog(dresses, { stock: "1" })).toHaveLength(1);
   });
+
+  it("sorts new arrivals newest first", () => {
+    const rows = [
+      { name: "Older", createdAt: new Date("2026-01-01") },
+      { name: "Newer", createdAt: new Date("2026-06-01") },
+    ] as unknown as CatalogProduct[];
+    expect(filterCatalog(rows, { sort: "new" }).map((item) => item.name)).toEqual(["Newer", "Older"]);
+  });
 });

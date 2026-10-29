@@ -14,7 +14,7 @@ const url = migrationDatabaseUrl();
 if (!url) {
   const scheme = (process.env.DATABASE_URL ?? "").split(":")[0] || "(empty)";
   console.error(
-    `Prisma needs a postgres:// URL. DATABASE_URL scheme is "${scheme}". Paste only the connection string, without quotes or a DATABASE_URL= prefix. Use the direct db.prisma.io URL for DIRECT_URL.`,
+    `Prisma needs a database URL. DATABASE_URL scheme is "${scheme}". On Vercel use the prisma+postgres:// string from Prisma Console. Paste only the connection string, without quotes or a DATABASE_URL= prefix.`,
   );
   process.exit(1);
 }

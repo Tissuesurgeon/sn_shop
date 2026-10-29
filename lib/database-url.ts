@@ -38,14 +38,22 @@ export function databaseUrlCandidates(): string[] {
   return urls;
 }
 
-export function migrationDatabaseUrl(): string | undefined {
+/** Serverless runtimes cannot open db.prisma.io:5432. Prefer the HTTP Prisma Postgres URL. */
+export function runtimeDatabaseUrl(): string | undefined {
   const urls = databaseUrlCandidates();
-  return urls.find((url) => url.startsWith("postgres://") || url.startsWith("postgresql://")) ?? urls[0];
+  return (
+    urls.find((url) => url.startsWith("prisma+postgres://") || url.startsWith("prisma://")) ??
+    urls.find((url) => url.startsWith("postgres://") || url.startsWith("postgresql://"))
+  );
+}
+
+export function migrationDatabaseUrl(): string | undefined {
+  return runtimeDatabaseUrl();
 }
 
 export function applyDatabaseEnv(): void {
-  const databaseUrl = normalizeDatabaseUrl(process.env.DATABASE_URL);
-  const directUrl = normalizeDatabaseUrl(process.env.DIRECT_URL) ?? databaseUrl;
+  const databaseUrl = runtimeDatabaseUrl();
+  const directUrl = migrationDatabaseUrl();
   if (databaseUrl) process.env.DATABASE_URL = databaseUrl;
   if (directUrl) process.env.DIRECT_URL = directUrl;
 }

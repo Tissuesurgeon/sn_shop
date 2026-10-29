@@ -1,5 +1,5 @@
 // SN Stitches. Money is Int pesewas. IDs are cuid().
-// Prisma Postgres: DATABASE_URL is pooled, DIRECT_URL is direct. Do not use localhost.
+// Prisma Postgres: DATABASE_URL is prisma+postgres:// on Vercel. DIRECT_URL falls back to it. Do not use localhost.
 
 generator client {
   provider = "prisma-client-js"

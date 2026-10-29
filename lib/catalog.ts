@@ -69,6 +69,6 @@ export function filterCatalog(products: CatalogProduct[], query: ShopQuery): Cat
 
   if (query.sort === "price-asc") rows.sort((a, b) => a.pricePesewas - b.pricePesewas);
   else if (query.sort === "price-desc") rows.sort((a, b) => b.pricePesewas - a.pricePesewas);
-  else if (query.sort === "new") rows.sort((a, b) => a.name.localeCompare(b.name));
+  else if (query.sort === "new") rows.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   return rows;
 }
