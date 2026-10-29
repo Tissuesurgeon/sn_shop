@@ -6,26 +6,24 @@ This repository is local development only. Richard deploys to Vercel himself —
 
 ## Local setup
 
-Requirements: Node 20+, pnpm, Docker.
+Requirements: Node 20+, pnpm.
 
 ```bash
 pnpm install
-docker compose up -d
 cp .env.example .env
 ```
 
-Prisma reads `.env`. Put the same local URL in both `DATABASE_URL` and `DIRECT_URL`:
-
-`postgresql://sn:sn_local@localhost:5438/sn_stitches`
+Prisma reads `.env`. Set `DATABASE_URL` and `DIRECT_URL` to the Prisma Postgres strings from the Prisma console (`db.prisma.io`). Do not point them at local Docker.
 
 Set `AUTH_SECRET`, `AUTH_URL=http://localhost:3000`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, and `ADMIN_EMAILS` to that owner email. For a local checkout without Paystack keys, set `NEXT_PUBLIC_DEMO_PAYMENTS=true`. That flag is ignored when `NODE_ENV=production`. Leave `PAYSTACK_SECRET_KEY`, `RESEND_API_KEY`, and `BLOB_READ_WRITE_TOKEN` empty until you have them. Never commit `.env`.
 
 ```bash
-pnpm exec prisma migrate reset
+pnpm exec prisma migrate deploy
+pnpm exec prisma db seed
 pnpm dev
 ```
 
-`migrate reset` applies migrations and runs the seed. The shop is at [http://localhost:3000](http://localhost:3000). Sign in at [http://localhost:3000/admin/login](http://localhost:3000/admin/login). The fixture `customer@snstitches.com` uses the same password and is turned away. With email keys empty, magic links and order emails print in the server console.
+`migrate deploy` applies migrations to Prisma Postgres. The seed loads the sample dresses and the owner. The shop is at [http://localhost:3000](http://localhost:3000). Sign in at [http://localhost:3000/admin/login](http://localhost:3000/admin/login). The fixture `customer@snstitches.com` uses the same password and is turned away. With email keys empty, magic links and order emails print in the server console.
 
 Replace the sample dresses from Admin → Products. They are marked `isSample` in `prisma/seed.ts`. Photos uploaded without a Blob token are written to `public/uploads`, which is gitignored. Studio address, privacy, terms, and returns pages are placeholders.
 

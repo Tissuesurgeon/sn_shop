@@ -1,6 +1,5 @@
 // SN Stitches. Money is Int pesewas. IDs are cuid().
-// Local Docker: DATABASE_URL and DIRECT_URL are the same.
-// Prisma Postgres: DATABASE_URL is pooled, DIRECT_URL is direct.
+// Prisma Postgres: DATABASE_URL is pooled, DIRECT_URL is direct. Do not use localhost.
 
 generator client {
   provider = "prisma-client-js"

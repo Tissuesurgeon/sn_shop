@@ -1,5 +1,5 @@
 # Local Postgres for development. Not used in production.
-# Both DATABASE_URL and DIRECT_URL point here; Prisma Postgres pooling is only for Vercel.
+# Optional unused local Postgres. The app uses Prisma Postgres via DATABASE_URL and DIRECT_URL.
 services:
   postgres:
     image: postgres:16
