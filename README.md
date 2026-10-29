@@ -13,7 +13,7 @@ pnpm install
 cp .env.example .env
 ```
 
-Prisma reads `.env`. Set `DATABASE_URL` and `DIRECT_URL` to the Prisma Postgres strings from the Prisma console (`db.prisma.io`). Do not point them at local Docker.
+Prisma reads `.env`. Set `DATABASE_URL` to the Prisma Postgres URL (`db.prisma.io`). Set `DIRECT_URL` to the direct URL when it is different. If `DIRECT_URL` is missing, the build uses `DATABASE_URL`. Do not point either at local Docker.
 
 Set `AUTH_SECRET`, `AUTH_URL=http://localhost:3000`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, and `ADMIN_EMAILS` to that owner email. For a local checkout without Paystack keys, set `NEXT_PUBLIC_DEMO_PAYMENTS=true`. That flag is ignored when `NODE_ENV=production`. Leave `PAYSTACK_SECRET_KEY`, `RESEND_API_KEY`, and `BLOB_READ_WRITE_TOKEN` empty until you have them. Never commit `.env`.
 

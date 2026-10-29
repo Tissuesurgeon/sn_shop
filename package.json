@@ -6,9 +6,9 @@
     "seed": "tsx prisma/seed.ts"
   },
   "scripts": {
-    "postinstall": "prisma generate",
+    "postinstall": "sh scripts/prisma-env.sh prisma generate",
     "dev": "next dev --turbopack",
-    "build": "prisma migrate deploy && next build",
+    "build": "sh scripts/prisma-env.sh prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
