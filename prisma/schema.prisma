@@ -1,0 +1,355 @@
+// SN Stitches. Money is Int pesewas. IDs are cuid().
+// Local Docker: DATABASE_URL and DIRECT_URL are the same.
+// Prisma Postgres: DATABASE_URL is pooled, DIRECT_URL is direct.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  CUSTOMER
+  STAFF
+  OWNER
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum DressLength {
+  MINI
+  MIDI
+  MAXI
+  PLAYSUIT
+}
+
+enum Size {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  MOMO
+  CARD
+  WHATSAPP
+}
+
+enum PaymentChannel {
+  MOBILE_MONEY
+  CARD
+  OTHER
+}
+
+enum PaymentStatus {
+  INITIALIZED
+  SUCCESS
+  FAILED
+  ABANDONED
+}
+
+enum MomoNetwork {
+  MTN
+  TELECEL
+  AIRTELTIGO
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+enum GhanaRegion {
+  GREATER_ACCRA
+  ASHANTI
+  CENTRAL
+  EASTERN
+  WESTERN
+  WESTERN_NORTH
+  VOLTA
+  OTI
+  NORTHERN
+  SAVANNAH
+  NORTH_EAST
+  UPPER_EAST
+  UPPER_WEST
+  BONO
+  BONO_EAST
+  AHAFO
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  imageUrl    String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id               String           @id @default(cuid())
+  name             String
+  slug             String           @unique
+  description      String
+  details          String[]
+  length           DressLength
+  pricePesewas     Int
+  compareAtPesewas Int?
+  status           ProductStatus    @default(DRAFT)
+  isFeatured       Boolean          @default(false)
+  madeToMeasure    Boolean          @default(false)
+  mtmFeePesewas    Int?
+  leadTimeDays     Int?
+  seoTitle         String?
+  seoDescription   String?
+  isSample         Boolean          @default(false)
+  categoryId       String
+  category         Category         @relation(fields: [categoryId], references: [id])
+  images           ProductImage[]
+  variants         ProductVariant[]
+  orderItems       OrderItem[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([status, isFeatured])
+  @@index([categoryId])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  pathname  String
+  alt       String
+  width     Int?
+  height    Int?
+  sortOrder Int     @default(0)
+
+  @@index([productId, sortOrder])
+}
+
+model ProductVariant {
+  id                   String      @id @default(cuid())
+  productId            String
+  product              Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size                 Size
+  colourName           String
+  colourHex            String?
+  sku                  String      @unique
+  stockQty             Int         @default(0)
+  priceOverridePesewas Int?
+  isActive             Boolean     @default(true)
+  orderItems           OrderItem[]
+
+  @@unique([productId, size, colourName])
+}
+
+model Customer {
+  id             String   @id @default(cuid())
+  fullName       String
+  phone          String   @unique
+  email          String?
+  marketingOptIn Boolean  @default(false)
+  orders         Order[]
+  createdAt      DateTime @default(now())
+}
+
+model DeliveryOption {
+  id         String        @id @default(cuid())
+  code       String        @unique
+  label      String
+  etaText    String
+  feePesewas Int
+  regions    GhanaRegion[]
+  cutoffTime String?
+  isPickup   Boolean       @default(false)
+  isActive   Boolean       @default(true)
+  sortOrder  Int           @default(0)
+  orders     Order[]
+}
+
+model Order {
+  id                 String          @id @default(cuid())
+  orderNumber        String          @unique @default(dbgenerated("('SNS-'::text || nextval('order_number_seq'::regclass))"))
+  accessToken        String          @unique @default(cuid())
+  status             OrderStatus     @default(PENDING)
+  needsAttention     Boolean         @default(false)
+  paymentMethod      PaymentMethod
+  momoNetwork        MomoNetwork?
+  customerId         String
+  customer           Customer        @relation(fields: [customerId], references: [id])
+  contactName        String
+  contactPhone       String
+  contactEmail       String
+  region             GhanaRegion
+  city               String
+  gpsAddress         String?
+  addressLine        String
+  landmark           String?
+  deliveryOptionId   String
+  deliveryOption     DeliveryOption  @relation(fields: [deliveryOptionId], references: [id])
+  deliveryFeePesewas Int
+  subtotalPesewas    Int
+  discountPesewas    Int             @default(0)
+  totalPesewas       Int
+  discountCodeId     String?
+  discountCode       DiscountCode?   @relation(fields: [discountCodeId], references: [id])
+  notes              String?
+  paidAt             DateTime?
+  stockCommitted     Boolean         @default(false)
+  notifiedAt         DateTime?
+  utm                Json?
+  items              OrderItem[]
+  payments           Payment[]
+  events             OrderEvent[]
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model OrderItem {
+  id               String         @id @default(cuid())
+  orderId          String
+  order            Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String
+  product          Product        @relation(fields: [productId], references: [id])
+  variantId        String
+  variant          ProductVariant @relation(fields: [variantId], references: [id])
+  productName      String
+  size             Size
+  colourName       String
+  unitPricePesewas Int
+  qty              Int
+  madeToMeasure    Boolean        @default(false)
+  lineTotalPesewas Int
+}
+
+model Payment {
+  id            String          @id @default(cuid())
+  orderId       String
+  order         Order           @relation(fields: [orderId], references: [id])
+  provider      String          @default("paystack")
+  reference     String          @unique
+  amountPesewas Int
+  currency      String          @default("GHS")
+  channel       PaymentChannel?
+  status        PaymentStatus   @default(INITIALIZED)
+  raw           Json?
+  verifiedAt    DateTime?
+  createdAt     DateTime        @default(now())
+}
+
+model OrderEvent {
+  id         String       @id @default(cuid())
+  orderId    String
+  order      Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus OrderStatus?
+  toStatus   OrderStatus?
+  note       String?
+  actor      String
+  createdAt  DateTime     @default(now())
+}
+
+model DiscountCode {
+  id                 String       @id @default(cuid())
+  code               String       @unique
+  type               DiscountType
+  value              Int
+  minSubtotalPesewas Int?
+  startsAt           DateTime?
+  endsAt             DateTime?
+  maxUses            Int?
+  usedCount          Int          @default(0)
+  isActive           Boolean      @default(true)
+  orders             Order[]
+}
+
+model StoreSettings {
+  id                           String  @id @default("default")
+  freeDeliveryThresholdPesewas Int     @default(150000)
+  whatsappNumber               String  @default("233546923596")
+  contactPhone                 String  @default("0546923596")
+  instagram                    String  @default("sn_stitches_")
+  tiktok                       String  @default("sn_stitches")
+  contactEmail                 String?
+  announcementText             String?
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  role          Role      @default(CUSTOMER)
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

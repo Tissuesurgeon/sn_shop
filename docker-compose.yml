@@ -1,0 +1,21 @@
+# Local Postgres for development. Not used in production.
+# Both DATABASE_URL and DIRECT_URL point here; Prisma Postgres pooling is only for Vercel.
+services:
+  postgres:
+    image: postgres:16
+    ports:
+      - "5438:5432"
+    environment:
+      POSTGRES_USER: sn
+      POSTGRES_PASSWORD: sn_local
+      POSTGRES_DB: sn_stitches
+    volumes:
+      - sn_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sn -d sn_stitches"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sn_pg:

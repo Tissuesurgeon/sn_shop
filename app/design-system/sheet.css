@@ -1,0 +1,283 @@
+.dsw {
+  padding-top: 74px;
+  padding-bottom: 60px;
+}
+
+.dshead {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dshead img {
+  height: 120px;
+  width: auto;
+}
+
+.dshead h1 {
+  font-size: 76px;
+  margin: 0;
+}
+
+.dsh {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 38px;
+  margin: 60px 0 24px;
+  border-bottom: 1.5px dashed rgba(176, 24, 94, 0.5);
+  padding-bottom: 12px;
+}
+
+.dsh .num {
+  font-size: 60px;
+}
+
+.sws {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+
+.swb {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.swb b {
+  font-weight: 600;
+}
+
+.chipc {
+  height: 90px;
+  border-radius: 14px;
+  margin-bottom: 8px;
+}
+
+.chipc.lined {
+  border: 1px solid var(--line);
+}
+
+.typ {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.display-sample {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 82px;
+  line-height: 1;
+}
+
+.script-sample {
+  font-size: 72px;
+  line-height: 1.1;
+}
+
+.tyg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.sample-h1 {
+  font-size: 52px;
+  margin: 0;
+}
+
+.sample-h2 {
+  font-size: 44px;
+  margin: 0;
+}
+
+.sample-h3 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.numeral-sample {
+  font-size: 80px;
+}
+
+.row {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.bcol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ing {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.ing2 {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 24px;
+  margin-top: 22px;
+}
+
+.pcg {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.3fr;
+  gap: 24px;
+}
+
+.pcg > div > .xs {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.motifs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.motifs .kente,
+.motifs .seam,
+.motifs .foil,
+.motifs .linen,
+.motifs .stitched,
+.motifs .thread {
+  width: 100%;
+}
+
+.box.motif-stitch {
+  padding: 0;
+}
+
+.mo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.motif-stitch {
+  height: 70px;
+  width: 100%;
+  padding: 0;
+}
+
+.motif-foil {
+  height: 70px;
+  width: 100%;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.motif-linen {
+  height: 50px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.scale {
+  margin-top: 22px;
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.scale-item {
+  text-align: center;
+}
+
+.scale-swatch {
+  background: var(--mag50);
+  border: 1px dashed var(--mag);
+  margin: 0 auto 4px;
+}
+
+.radii {
+  margin-left: 30px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+}
+
+.radius-box {
+  width: 70px;
+  height: 50px;
+  border: 1.5px solid var(--ink);
+}
+
+.r-input {
+  border-radius: 10px;
+}
+
+.r-card {
+  border-radius: 14px;
+}
+
+.r-pill {
+  border-radius: 999px;
+}
+
+.r-arch {
+  border-radius: 200px 200px 14px 14px;
+}
+
+.link-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .dsw {
+    padding-top: 50px;
+  }
+
+  .dshead {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dshead h1 {
+    font-size: 50px !important;
+  }
+
+  .sws {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .tyg,
+  .ing,
+  .ing2 {
+    grid-template-columns: 1fr;
+  }
+
+  .pcg {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .motifs {
+    grid-column: 1 / -1;
+  }
+
+  .display-sample {
+    font-size: 44px !important;
+  }
+
+  .dsh {
+    font-size: 28px;
+  }
+
+  .radii {
+    margin-left: 0;
+  }
+}

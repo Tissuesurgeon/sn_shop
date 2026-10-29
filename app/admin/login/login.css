@@ -1,0 +1,126 @@
+.lgw {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  background: var(--cream);
+}
+
+.lgart {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  min-height: 100vh;
+}
+
+.lgart img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.75;
+}
+
+.lgq {
+  position: absolute;
+  left: 50px;
+  bottom: 60px;
+  right: 50px;
+  z-index: 1;
+}
+
+.lgq p {
+  margin: 0.4em 0 0;
+}
+
+.lgf {
+  display: grid;
+  place-items: center;
+  padding: 40px;
+}
+
+.box.lgbox {
+  width: 100%;
+  max-width: 440px;
+  border-radius: 20px;
+  padding: 40px;
+}
+
+.lgbox .logo {
+  height: 110px;
+  width: auto;
+  margin: 0 auto 10px;
+}
+
+.lgbox .eb,
+.lgbox h1 {
+  text-align: center;
+}
+
+.lgbox h1 {
+  font-size: 40px;
+}
+
+.lgbox .fld {
+  margin-bottom: 18px;
+}
+
+.lgbox .btn.b {
+  width: 100%;
+}
+
+.lgbox .btn.p {
+  box-shadow: none;
+}
+
+.lg-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lg-or .seam {
+  flex: 1;
+  opacity: 0.4;
+}
+
+.lg-note {
+  text-align: center;
+  margin: 18px 0 0;
+}
+
+.pw {
+  position: relative;
+}
+
+.pw-sample {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+@media (max-width: 600px) {
+  .lgw {
+    grid-template-columns: 1fr;
+  }
+
+  .lgart {
+    display: none;
+  }
+
+  .lgf {
+    padding: 30px 16px;
+    align-items: start;
+  }
+
+  .box.lgbox {
+    padding: 28px 22px;
+  }
+}
