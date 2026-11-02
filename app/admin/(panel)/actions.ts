@@ -77,8 +77,11 @@ export async function uploadProductImage(formData: FormData) {
   await requireAdmin();
   const productId = String(formData.get("productId") ?? "");
   const file = formData.get("file");
-  if (!productId || !(file instanceof File) || file.size === 0 || file.size > 8_000_000) return;
-  const allowed = ["image/jpeg", "image/png", "image/webp"];
+  if (!productId || !(file instanceof File) || file.size === 0) return;
+  const isVideo = file.type === "video/mp4";
+  const maxBytes = isVideo ? 20_000_000 : 8_000_000;
+  if (file.size > maxBytes) return;
+  const allowed = ["image/jpeg", "image/png", "image/webp", "video/mp4"];
   if (!allowed.includes(file.type)) return;
   const bytes = Buffer.from(await file.arrayBuffer());
   const safeName = file.name.replace(/[^\w.]+/g, "-");
@@ -103,7 +106,13 @@ export async function uploadProductImage(formData: FormData) {
     pathname = `uploads/${filename}`;
   }
   await prisma.productImage.create({
-    data: { productId, url, pathname, alt: String(formData.get("alt") ?? "Dress photo") },
+    data: {
+      productId,
+      url,
+      pathname,
+      alt: String(formData.get("alt") ?? (isVideo ? "Dress video" : "Dress photo")),
+      kind: isVideo ? "VIDEO" : "IMAGE",
+    },
   });
   revalidateTag("products");
 }

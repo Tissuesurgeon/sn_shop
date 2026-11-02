@@ -1,35 +1,92 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 import { BuyBox } from "@/components/product/buy-box";
-import { getActiveProduct } from "@/lib/catalog";
+import { isAdminRole, type SessionRole } from "@/lib/admin-access";
+import { coverImage, getActiveProduct, type CatalogProduct } from "@/lib/catalog";
 import { formatGHS } from "@/lib/format";
+
+async function loadProduct(slug: string, preview?: string) {
+  let includeDraft = false;
+  if (preview === "1") {
+    const session = await auth();
+    includeDraft = isAdminRole(session?.user?.role as SessionRole);
+  }
+  return getActiveProduct(slug, { includeDraft });
+}
+
+function firstValue(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ preview?: string | string[] }>;
 }): Promise<Metadata> {
-  const product = await getActiveProduct((await params).slug);
+  const product = await loadProduct((await params).slug, firstValue((await searchParams).preview));
   if (!product) return { title: "Dress" };
+  const cover = coverImage(product.images);
   return {
     title: product.name,
     description: product.description,
     openGraph: {
-      images: product.images[0] ? [product.images[0].url] : [],
+      images: cover ? [cover.url] : [],
     },
   };
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  const product = await getActiveProduct((await params).slug);
+function GalleryTile({
+  media,
+  preload,
+}: {
+  media: CatalogProduct["images"][number];
+  preload: "metadata" | "none";
+}) {
+  const video = media.kind === "VIDEO";
+  return (
+    <div className={video ? "galt stitched is-video" : "galt stitched"}>
+      {video ? (
+        <video
+          src={media.url}
+          poster={media.posterUrl ?? undefined}
+          muted
+          autoPlay
+          loop
+          playsInline
+          preload={preload}
+          aria-label={media.alt}
+        />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={media.url} alt={media.alt} />
+      )}
+    </div>
+  );
+}
+
+export default async function ProductPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ preview?: string | string[] }>;
+}) {
+  const product = await loadProduct((await params).slug, firstValue((await searchParams).preview));
   if (!product) notFound();
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const cover = coverImage(product.images);
+  const rest = product.images.filter((media) => media !== cover);
+  const firstVideo = rest.find((media) => media.kind === "VIDEO")?.url;
+  const photos = product.images.filter((media) => media.kind !== "VIDEO");
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.description,
-    image: product.images.map((image) => image.url),
+    image: photos.map((image) => image.url),
     brand: { "@type": "Brand", name: "SN Stitches" },
     offers: {
       "@type": "Offer",
@@ -48,12 +105,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="gallery">
         <div className="gmain foil">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={product.images[0]?.url ?? "/sample/d1.webp"} alt={product.images[0]?.alt ?? product.name} />
+          <img src={cover?.url ?? "/sample/d1.webp"} alt={cover?.alt ?? product.name} />
         </div>
-        {product.images[1] ? (
-          <div className="galt stitched">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={product.images[1].url} alt={product.images[1].alt} />
+        {rest.length > 0 ? (
+          <div className="grest">
+            {rest.map((media) => (
+              <GalleryTile
+                key={`${media.sortOrder}-${media.url}`}
+                media={media}
+                preload={media.kind === "VIDEO" && media.url === firstVideo ? "metadata" : "none"}
+              />
+            ))}
           </div>
         ) : null}
       </div>

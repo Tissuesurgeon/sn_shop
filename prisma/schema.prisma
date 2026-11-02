@@ -23,6 +23,11 @@ enum ProductStatus {
   ARCHIVED
 }
 
+enum MediaKind {
+  IMAGE
+  VIDEO
+}
+
 enum DressLength {
   MINI
   MIDI
@@ -141,15 +146,17 @@ model Product {
 }
 
 model ProductImage {
-  id        String  @id @default(cuid())
+  id        String    @id @default(cuid())
   productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   url       String
   pathname  String
   alt       String
+  kind      MediaKind @default(IMAGE)
+  posterUrl String?
   width     Int?
   height    Int?
-  sortOrder Int     @default(0)
+  sortOrder Int       @default(0)
 
   @@index([productId, sortOrder])
 }

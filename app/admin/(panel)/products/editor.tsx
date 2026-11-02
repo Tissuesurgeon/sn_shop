@@ -2,7 +2,7 @@ import { saveProduct, uploadProductImage } from "../actions";
 
 type Category = { id: string; name: string };
 type Variant = { size: string; stockQty: number; colourName: string; colourHex: string | null };
-type ImageRow = { id: string; url: string; alt: string };
+type ImageRow = { id: string; url: string; alt: string; kind: string; posterUrl: string | null };
 
 export function ProductEditor({
   product,
@@ -126,13 +126,24 @@ export function ProductEditor({
           <input type="hidden" name="productId" value={product.id} />
           <h3>Photos</h3>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {product.images.map((image) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img key={image.id} src={image.url} alt={image.alt} style={{ width: 80, height: 100, objectFit: "cover" }} />
-            ))}
+            {product.images.map((image) =>
+              image.kind === "VIDEO" ? (
+                <video
+                  key={image.id}
+                  src={image.url}
+                  poster={image.posterUrl ?? undefined}
+                  muted
+                  playsInline
+                  style={{ width: 80, height: 100, objectFit: "cover" }}
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={image.id} src={image.url} alt={image.alt} style={{ width: 80, height: 100, objectFit: "cover" }} />
+              ),
+            )}
           </div>
           <input className="in" name="alt" placeholder="Alt text" />
-          <input name="file" type="file" accept="image/jpeg,image/png,image/webp" />
+          <input name="file" type="file" accept="image/jpeg,image/png,image/webp,video/mp4" />
           <button className="btn g s" type="submit">
             Upload photo
           </button>

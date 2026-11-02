@@ -3,6 +3,8 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { activeProductSelect } from "@/lib/catalog-select";
 
+export { coverImage, firstVideoUrl } from "@/lib/cover-image";
+
 export { activeProductSelect };
 
 export type CatalogProduct = Prisma.ProductGetPayload<{ select: typeof activeProductSelect }>;
@@ -15,9 +17,11 @@ export const listActiveProducts = cache(async () => {
   });
 });
 
-export const getActiveProduct = cache(async (slug: string) => {
+export const getActiveProduct = cache(async (slug: string, options?: { includeDraft?: boolean }) => {
   return prisma.product.findFirst({
-    where: { slug, status: "ACTIVE" },
+    where: options?.includeDraft
+      ? { slug, status: { in: ["ACTIVE", "DRAFT"] } }
+      : { slug, status: "ACTIVE" },
     select: activeProductSelect,
   });
 });

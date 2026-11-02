@@ -45,6 +45,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Source videos stay on disk. The shop serves the Blob copies.
+docs/listing-images/**/*.mp4
+
 # local product uploads when Blob is not configured
 /public/uploads/*
 !/public/uploads/.gitkeep

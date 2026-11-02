@@ -18,7 +18,7 @@ export const activeProductSelect = {
   category: { select: { name: true, slug: true } },
   images: {
     orderBy: { sortOrder: "asc" },
-    select: { url: true, alt: true, width: true, height: true, sortOrder: true },
+    select: { url: true, alt: true, kind: true, posterUrl: true, width: true, height: true, sortOrder: true },
   },
   variants: {
     where: { isActive: true },

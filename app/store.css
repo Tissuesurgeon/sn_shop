@@ -777,10 +777,12 @@
   gap: 16px;
 }
 
-.gallery img {
+.gallery img,
+.gallery video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .gmain {
@@ -794,6 +796,23 @@
   border-radius: 16px;
   overflow: hidden;
   min-height: 420px;
+}
+
+.grest {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grest .galt {
+  min-height: 0;
+  aspect-ratio: 4 / 5;
+}
+
+.galt.is-video,
+.grest .galt.is-video {
+  min-height: 0;
+  aspect-ratio: 3 / 4;
 }
 
 .pt {

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/atelier";
-import { filterCatalog, lengthLabel, listActiveProducts, productInStock, type ShopQuery } from "@/lib/catalog";
+import { coverImage, filterCatalog, firstVideoUrl, lengthLabel, listActiveProducts, productInStock, type ShopQuery } from "@/lib/catalog";
 
 const categories = [
   { slug: "", label: "All" },
@@ -111,7 +111,8 @@ export async function ShopListing({ category, query }: { category: string; query
                 meta={`${product.category.name} · ${lengthLabel(product.length)}`}
                 price={product.pricePesewas}
                 compareAt={product.compareAtPesewas ?? undefined}
-                image={product.images[0]?.url ?? "/sample/d1.webp"}
+                image={coverImage(product.images)?.url ?? "/sample/d1.webp"}
+                video={firstVideoUrl(product.images)}
                 alt={product.name}
                 href={`/product/${product.slug}`}
                 badge={!productInStock(product) ? "sold" : product.compareAtPesewas ? "sale" : undefined}

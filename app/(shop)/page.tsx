@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/atelier";
-import { lengthLabel, listActiveProducts } from "@/lib/catalog";
+import { coverImage, firstVideoUrl, lengthLabel, listActiveProducts } from "@/lib/catalog";
 import { formatGHS } from "@/lib/format";
 import { whatsappHref } from "@/lib/settings";
 
@@ -56,7 +56,7 @@ export default async function HomePage() {
             </div>
             <div className="foil hi2 stitched">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={sika?.images[0]?.url ?? "/sample/playsuit-2.webp"} alt={sika?.name ?? ""} />
+              <img src={sika ? (coverImage(sika.images)?.url ?? "/sample/playsuit-2.webp") : "/sample/playsuit-2.webp"} alt={sika?.name ?? ""} />
             </div>
             <span className="tag big mag hprice">New · {sika ? formatGHS(sika.pricePesewas) : "GH₵420"}</span>
             <div className="hcap">
@@ -106,7 +106,8 @@ export default async function HomePage() {
                 name={sika.name}
                 meta={`${sika.category.name} · ${lengthLabel(sika.length)}`}
                 price={sika.pricePesewas}
-                image={sika.images[0]?.url ?? "/sample/playsuit-2.webp"}
+                image={coverImage(sika.images)?.url ?? "/sample/playsuit-2.webp"}
+                video={firstVideoUrl(sika.images)}
                 alt={sika.name}
                 href={`/product/${sika.slug}`}
                 badge="new"
@@ -119,7 +120,8 @@ export default async function HomePage() {
                 meta={`${product.category.name} · ${lengthLabel(product.length)}`}
                 price={product.pricePesewas}
                 compareAt={product.compareAtPesewas ?? undefined}
-                image={product.images[0]?.url ?? "/sample/d1.webp"}
+                image={coverImage(product.images)?.url ?? "/sample/d1.webp"}
+                video={firstVideoUrl(product.images)}
                 alt={product.name}
                 href={`/product/${product.slug}`}
                 badge={product.compareAtPesewas ? "sale" : undefined}

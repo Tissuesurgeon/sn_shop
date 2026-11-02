@@ -3,6 +3,7 @@ import type { GhanaRegion, PaymentChannel, PaymentMethod, Prisma, Size } from "@
 import { z } from "zod";
 import { quoteDelivery } from "@/lib/delivery";
 import { toE164 } from "@/lib/phone";
+import { coverImage } from "@/lib/cover-image";
 import { prisma } from "@/lib/prisma";
 import { demoPaymentsEnabled, paymentsConfigured } from "@/lib/paystack";
 import { GHANA_REGIONS } from "@/lib/regions";
@@ -66,7 +67,7 @@ export async function priceCart(items: CheckoutInput["items"]): Promise<{
   const variants = await prisma.productVariant.findMany({
     where: { id: { in: items.map((item) => item.variantId) }, isActive: true, product: { status: "ACTIVE" } },
     include: {
-      product: { include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } } },
+      product: { include: { images: { where: { kind: "IMAGE" }, orderBy: { sortOrder: "asc" }, take: 1 } } },
     },
   });
   const byId = new Map(variants.map((variant) => [variant.id, variant]));
@@ -85,7 +86,7 @@ export async function priceCart(items: CheckoutInput["items"]): Promise<{
       slug: variant.product.slug,
       size: variant.size,
       colourName: variant.colourName,
-      image: variant.product.images[0]?.url ?? "/sample/d1.webp",
+      image: coverImage(variant.product.images)?.url ?? "/sample/d1.webp",
       qty: item.qty,
       madeToMeasure: item.madeToMeasure,
       unitPricePesewas: unit,

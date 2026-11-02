@@ -6,6 +6,7 @@ import { TapeMeasure } from "@/components/atelier";
 import { useCart } from "@/components/cart/store";
 import { formatGHS } from "@/lib/format";
 import type { CatalogProduct } from "@/lib/catalog";
+import { coverImage } from "@/lib/cover-image";
 
 const sizes = ["XS", "S", "M", "L", "XL", "XXL"] as const;
 
@@ -38,7 +39,7 @@ export function BuyBox({ product }: { product: CatalogProduct }) {
       name: product.name,
       size: variant.size,
       colour: variant.colourName,
-      image: product.images[0]?.url ?? "/sample/d1.webp",
+      image: coverImage(product.images)?.url ?? "/sample/d1.webp",
       qty: 1,
       madeToMeasure,
       unitPricePesewas: unit,

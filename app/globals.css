@@ -879,11 +879,23 @@ select.in.sel::after {
   grid-area: 1 / 1;
 }
 
-.card .ph img {
+.card .ph img,
+.card .ph video.card-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   position: relative;
+}
+
+.card .ph video.card-video {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (min-width: 900px) {
+  .card:hover .ph video.card-video {
+    opacity: 1;
+  }
 }
 
 .card .ph .pill {
